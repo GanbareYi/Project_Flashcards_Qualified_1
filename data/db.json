@@ -1,0 +1,75 @@
+{
+  "decks": [
+    {
+      "name": "Rendering in React",
+      "description": "React's component structure allows for quickly building a complex web application that relies on DOM manipulation.",
+      "id": 1
+    },
+    {
+      "name": "React Router",
+      "description": "React Router is a collection of navigational components that compose declaratively with your application.",
+      "id": 2
+    },
+    {
+      "name": "Testing Deck",
+      "description": "Test Test endless test!",
+      "id": 3
+    }
+  ],
+  "cards": [
+    {
+      "front": "Differentiate between Real DOM and Virtual DOM.",
+      "back": "Differentiate between Real DOM and Virtual DOM.",
+      "deckId": 1,
+      "id": 1
+    },
+    {
+      "front": "How do you modify the state of a different React component?",
+      "back": "Not at all! State is visible to the component only.",
+      "deckId": 1,
+      "id": 2
+    },
+    {
+      "front": "How do you pass data 'down' to a React child component?",
+      "back": "As properties or props",
+      "deckId": 1,
+      "id": 3
+    },
+    {
+      "front": "What path will match the follow Route?\\n<Route>\\n  <NotFound />\\n</Route>\"",
+      "back": "All paths. A route with no path matches all URL's",
+      "deckId": 2,
+      "id": 4
+    },
+    {
+      "front": "What does <Switch> do?",
+      "back": "What does <Switch> do?",
+      "deckId": 2,
+      "id": 5
+    },
+    {
+      "front": "1st Card ?",
+      "back": "Yes , this is the first card1",
+      "deckId": 3,
+      "id": 6
+    },
+    {
+      "front": "2?",
+      "back": "Why not?",
+      "deckId": 3,
+      "id": 7
+    },
+    {
+      "front": "3",
+      "back": "Enough, I guess.",
+      "deckId": 3,
+      "id": 8
+    },
+    {
+      "front": "dddd",
+      "back": "dddd",
+      "deckId": 3,
+      "id": 9
+    }
+  ]
+}
