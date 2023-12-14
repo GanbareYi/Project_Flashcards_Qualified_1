@@ -89,7 +89,7 @@ function Study() {
             <h1>Study: {deck.name}</h1>
             {cards.length <= 2 ? 
                 <div>
-                    <h4>No enough cards.</h4>
+                    <p>Not enough cards</p>
                     <p>You need at least 3 cards to study. There are {cards.length} in this deck.</p>
                     <button className="btn btn-primary"
                             onClick={handleAddCard}>Add Cards</button>
