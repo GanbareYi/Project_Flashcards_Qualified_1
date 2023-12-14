@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { deleteDeck } from "../utils/api/index";
 
-function DeckList( { decks=[] }) {
+function Decks( { decks=[] }) {
     const history = useHistory();
 
     const handleDelete = async (deckId)=> {
@@ -47,4 +47,4 @@ function DeckList( { decks=[] }) {
     );
 }
 
-export default DeckList;
+export default Decks;
