@@ -1,44 +1,83 @@
-import React, { Fragment, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { createCard } from "../utils/api/index";
+import React, { Fragment, useState, useEffect } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { createCard, updateCard, readCard } from "../utils/api/index";
 
-function Card({ deck={} }) {
+function Card({ deck={}, onUpdate }) {
+    const history = useHistory();
+
     const initialForm = {
         front: "",
         back: "",
     };
     const [formData, setFormData] = useState(initialForm);
-    const history = useHistory();
+    const { cardId } = useParams();
+    const abortController = new AbortController();
 
+    //-----------Fetch card info with given card ID-----
+    useEffect(()=> {
+        async function loadCard() {
+            const { signal } = abortController.signal;
+            try{
+                const card = await readCard(cardId, signal);
+                setFormData(card);
+            }catch(error){
+                console.log("Reading card failed!!", error);
+            }
+        }
+        if (cardId) loadCard();
+
+        return () => {
+            console.log("Abort Request in Card Component");
+            abortController.abort();
+        }
+    }, []);
+    //-------------------------------------------------
+
+
+    // ---------Event Handlers For Input Fields---------
     const handleChange = (event) => {
         const { target } = event;
         const { name, value } = target;
-
+        
         setFormData({...formData,
-                    [name]: value});
+            [name]: value});
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        onUpdate("");
 
         try{
-            const card = await createCard(deck.id, formData);
-            setFormData(initialForm);
+            if (!cardId) {
+                const card = await createCard(deck.id, formData);
+                setFormData(initialForm);
+                onUpdate("created");
+            }else{
+                const response = await updateCard(formData);
+                onUpdate("cardEdited");
+                history.push(`/decks/${deck.id}`);
+            }
         }catch(error){
-            console.log("Adding card failed!!", error);
+            console.log(error);
         }
     }
 
-    return (
+    const handleCancel = () => {
+        history.push(`/decks/${deck.id}`);
+    }
+
+    return ( 
         <Fragment>
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Home</Link></li>
                     <li className="breadcrumb-item"><Link to={`/decks/${deck.id}`}>{deck.name}</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Add Card</li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                        {cardId ? `Edit Card ${cardId}`: "Add Card"}
+                    </li> 
                 </ol>
             </nav>
-            <h1>{deck.name}: Add Card</h1>
+            <h1>{cardId ? `Edit Card : ${deck.name}`: "Add Card"}</h1> 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Front</label>
@@ -47,6 +86,7 @@ function Card({ deck={} }) {
                         className="form-control"
                         placeholder="Front side of card"
                         value={formData.front}
+                        defaultValue={formData.front} 
                         onChange={handleChange}
                         required/>
                 </div>
@@ -55,14 +95,21 @@ function Card({ deck={} }) {
                     <textarea 
                         name="back"
                         className="form-control"
-                        placeholder="Back side of card" 
+                        placeholder="Back side of card"
                         value={formData.back}
+                        defaultValue={formData.back} 
                         onChange={handleChange}
                         required />
                 </div>
+                {/* Cancle or Done Button */}
                 <button className="btn btn-secondary mr-2"
-                        onClick={()=>history.push(`/decks/${deck.id}`)}>Done</button>
-                <button type="submit" className="btn btn-primary">Save</button>
+                        onClick={handleCancel}> 
+                            {cardId ? "Cancel" : "Done"}
+                </button>
+                {/* Submit or Save Button */}
+                <button type="submit" className="btn btn-primary">
+                   { cardId ? "Submit" : "Save" }
+                </button>
             </form>
         </Fragment>
     );
