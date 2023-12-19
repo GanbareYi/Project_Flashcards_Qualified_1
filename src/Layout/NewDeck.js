@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { createDeck } from "../utils/api/index";
 
-function NewDeck() {
+function NewDeck({ onCreate }) {
     const history = useHistory();
     const [formData, setFormData] = useState({});
 
@@ -17,8 +17,11 @@ function NewDeck() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        onCreate("");
         try {
             const deck = await createDeck(formData)
+            onCreate("created");
             history.push(`/decks/${deck.id}`);
         }catch(error){
             console.log("Creating deck failed!!", error);

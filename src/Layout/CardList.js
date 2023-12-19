@@ -2,15 +2,17 @@ import React, { Fragment } from "react"
 import { Link, useHistory } from "react-router-dom";
 import { deleteDeck, deleteCard } from "../utils/api/index";
 
-function CardList( { deckId, deck={}, cards=[] }){
+function CardList( { deckId, deck={}, cards=[], onUpdate }){
     const history = useHistory();
     const handleDeleteDeck = async (deckId)=> {
+        onUpdate("");
         if (window.confirm(
                 "Delete this deck?\n\nYou will not be able to recover it."))
         {
             try{
                 const response = await deleteDeck(deckId);
-                history.push("/")
+                onUpdate("delDeck");
+                history.push("/");
             }catch(error) {
                 console.log("Deleting deck failed!!", error);
             }
@@ -18,9 +20,11 @@ function CardList( { deckId, deck={}, cards=[] }){
     }
 
     const handleDeleteCard = async (cardId) => {
+        onUpdate("");
         if (window.confirm("Delete this card?\n\nYou will not be able to recover it.")){
             try {
                 const response = await deleteCard(cardId);
+                onUpdate("delCard");
             }catch(error) {
                 console.log("Deleting card failed!!", error);
             }

@@ -6,11 +6,11 @@ import CreateDeck from "./CreateDeck";
 import Decks from "./Decks";
 import NewDeck from "./NewDeck";
 import Deck from "./Deck";
-import Card from "./Card";
 import { listDecks } from "../utils/api/index";
 
 function Layout() {
   const [decks, setDecks] = useState([]);
+  const [action, setAction] = useState("");
   const abortController = new AbortController();
 
   useEffect(() => {
@@ -35,7 +35,12 @@ function Layout() {
     return () => {
       abortController.abort();
     }
-  }, [decks]);
+  }, [action]);
+
+  const handleCreate = (deck) => {
+    setDecks([...decks,
+              deck]);
+  }
 
   return (
     <Fragment>
@@ -45,13 +50,13 @@ function Layout() {
         <Switch>
           <Route exact path="/">
             <CreateDeck />
-            <Decks decks={decks}/>
+            <Decks decks={decks} onDelete={setAction}/>
           </Route>
           <Route path="/decks/new">
-            <NewDeck />
+            <NewDeck onCreate={setAction}/>
           </Route>
-          <Route path="/decks/:deckId">
-            <Deck />
+          <Route path="/decks/:deckId" >
+            <Deck onUpdate={setAction}/>
           </Route>
           <Route path="*">
             <NotFound />

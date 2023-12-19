@@ -5,11 +5,11 @@ import Study from "./Study";
 import CardList from "./CardList";
 import Card from "./Card";
 import EditDeck from "./EditDeck";
-import EditCard from "./EditCard";
 
-function Deck(){
+function Deck({ onUpdate }){
     const [deck, setDeck] = useState({});
     const [cards, setCards] = useState([]);
+    const [status, setStatus] = useState("");
     const abortController = new AbortController();
     const { deckId } = useParams();
     const { path } = useRouteMatch();
@@ -17,11 +17,14 @@ function Deck(){
     useEffect(()=>{
         async function loadDeck(){
             const { signal } = abortController.signal;
+
+            onUpdate("");
             
             try{
                 const response = await readDeck(deckId, signal);
                 setDeck(response);
                 setCards(response.cards);
+                onUpdate("updated");
             }catch(error) {
                 console.log("Loading deck failed!", error);
             }
@@ -32,25 +35,25 @@ function Deck(){
         return () => {
             console.log("Request aborted!")
         }
-    }, [deckId, cards]);
+    }, [deckId, status]);
 
     return (
         <Fragment>
             <Switch>
                 <Route exact path={path}>
-                    <CardList deckId={deckId} deck={deck} cards={cards} />
+                    <CardList deckId={deckId} deck={deck} cards={cards} onUpdate={setStatus}/>
                 </Route>
                 <Route path={`${path}/study`}>
                     <Study />
                 </Route>
                 <Route path={`${path}/cards/new`}>
-                    <Card deck={deck} />
-                </Route>
-                <Route path={`${path}/edit`}>
-                    <EditDeck deck={deck}/>
+                    <Card deck={deck} onUpdate={setStatus}/>
                 </Route>
                 <Route path={`${path}/cards/:cardId/edit`}>
-                    <EditCard deck={deck}/>
+                    <Card deck={deck} onUpdate={setStatus}/>
+                </Route>
+                <Route path={`${path}/edit`}>
+                    <EditDeck deck={deck} onEdit={setStatus} />
                 </Route>
             </Switch>
         </Fragment>

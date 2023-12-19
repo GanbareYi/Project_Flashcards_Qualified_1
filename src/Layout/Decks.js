@@ -2,15 +2,17 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { deleteDeck } from "../utils/api/index";
 
-function Decks( { decks=[] }) {
+function Decks( { decks=[], onDelete }) {
     const history = useHistory();
 
     const handleDelete = async (deckId)=> {
+        onDelete("");
         if (window.confirm(
                 "Delete this deck?\n\nYou will not be able to recover it."))
         {
             try{
                 const response = await deleteDeck(deckId);
+                onDelete("delDeck");
             }catch(error) {
                 console.log("Deleting deck failed!!", error);
             }
@@ -22,7 +24,10 @@ function Decks( { decks=[] }) {
             <div className="card-body">
                 <div className="d-flex">
                     <h5 className="card-title mr-auto">{deck.name}</h5>
-                    <h6 className="text-muted">{deck.cards.length} cards</h6>
+                    {deck.cards ? 
+                        <h6 className="text-muted">{deck.cards.length} cards</h6>:
+                        <h6 className="text-muted">0 cards</h6>
+                    }
                 </div>
                 <p className="card-text">{deck.description}</p>
                 <button 
@@ -31,7 +36,8 @@ function Decks( { decks=[] }) {
                     >View</button>
                 <button 
                     className="btn btn-primary mx-2"
-                    onClick={()=> history.push(`/decks/${deck.id}/study`)}>Study</button>
+                    onClick={()=> history.push(`/decks/${deck.id}/study`)}
+                    >Study</button>
                 <button 
                     className="btn btn-danger float-right"
                     onClick={() => handleDelete(deck.id)}

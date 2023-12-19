@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { updateDeck } from "../utils/api";
 
-function EditDeck( { deck ={} }) {
+function EditDeck( { deck ={}, onEdit }) {
     const initialForm = {
         name: deck.name,
         description: deck.description,
@@ -27,8 +27,11 @@ function EditDeck( { deck ={} }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        onEdit("");
+
         try {
             const response = await updateDeck(formData);
+            onEdit("deckEdited");
         }catch(error){
             console.log("Editing deck failed!!", error);
         }
